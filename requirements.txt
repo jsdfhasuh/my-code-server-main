@@ -1,0 +1,11 @@
+qbittorrent-api
+cn2an
+transmission_rpc
+slack_sdk
+torrentool
+django==2.2.12
+bs4
+lxml
+pysubs2
+zhconv
+ffmpeg-python
