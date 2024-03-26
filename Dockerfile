@@ -25,6 +25,7 @@ RUN apt-get update && apt-get install -y python3
 RUN apt-get update && apt-get install -y python3-pip
 RUN apt-get update && apt-get install -y tzdata
 RUN apt-get update && apt-get install -y gdb
+RUN apt-get update && apt-get install -y locales
 
 
 # Set the timezone to China Standard Time
@@ -36,12 +37,20 @@ COPY requirements.txt .
 RUN pip3 install -r requirements.txt
 
 
+# Generate Chinese locale
+RUN locale-gen zh_CN.UTF-8
 
-# Switch to the non-root user
+# Set environment variables
+ENV LANG zh_CN.UTF-8
+ENV LANGUAGE zh_CN:zh
+
+
+
+# Switch to the root user
 USER root
 
 # Set the home directory for the non-root user
-ENV HOME /home/vscodeuser
+ENV HOME /root
 
 # Expose the port for VS Code
 ENV PORT 8553
@@ -57,4 +66,4 @@ ENV token_to_define caijiahao
 
 
 # Start Visual Studio Code on port $PORT from anywhere (0.0.0.0)
-CMD code serve-web --host 0.0.0.0 --port $PORT  --without-connection-token  --user-data-dir $HOME --extensions-dir  $HOME/extensions  --server-data-dir $HOME/server  --log info
+CMD code serve-web --host 0.0.0.0 --port $PORT  --without-connection-token  --accept-server-license-terms --user-data-dir $HOME --extensions-dir  $HOME/extensions  --server-data-dir $HOME/server  --log info
