@@ -30,3 +30,41 @@ WORKSPACE 工作路径
 挂载路径：
 /home/vscodeuser  vscode的存储插件的路径
 /workspace   开发代码区域
+
+
+3. nginx SSL 配置（别问我为什么是这样的）
+# my code server
+server {
+          listen 8553 ssl;
+          server_name *;
+          
+          charset utf-8;
+               
+          ssl_certificate *.pem;
+          ssl_certificate_key *.key;
+          access_log /log/vscode.log django_foramt;
+
+	location / {
+
+		proxy_pass http://192.168.1.40:80/; 
+		auth_basic "Restricted Access";
+        auth_basic_user_file /passwd/.htpasswd;
+
+		proxy_set_header X-Real-IP $remote_addr;
+
+		proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+
+		proxy_set_header Host $http_host;
+
+		proxy_set_header X-NginX-Proxy true;
+
+		proxy_http_version 1.1;
+
+		proxy_set_header Upgrade $http_upgrade;
+
+		proxy_set_header Connection "upgrade";
+
+		proxy_redirect off;
+
+	}
+}
